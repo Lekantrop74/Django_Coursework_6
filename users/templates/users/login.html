@@ -1,0 +1,35 @@
+{% extends 'forwarding/home_page.html' %}
+
+{% block body %}
+
+{% load static %}
+<head>
+    <link href="{% static 'catalog/css/style.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Войти</title>
+</head>
+
+<div class="container">
+    <h1>Войти</h1>
+
+    <form enctype="multipart/form-data" method="post">
+
+        {% csrf_token %}
+        {{form.as_p}}
+
+        <div class="row">
+            <div class="input-field col s12">
+                <button class="btn waves-effect waves-light" name="action" type="submit">Отправить</button>
+            </div>
+        </div>
+    </form>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            M.AutoInit();
+        });
+    </script>
+</div>
+{% endblock %}
