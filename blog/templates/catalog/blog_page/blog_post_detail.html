@@ -1,0 +1,35 @@
+{% extends 'forwarding/home_page.html' %}
+{% block body %}
+
+{% load my_tags %}
+
+    <div class="container">
+        <a href="{% url 'blog:blog_base_page' %}" class="btn waves-effect waves-light">Назад</a>
+
+        <!-- Заголовок страницы -->
+        <h2 class="blog-title">{{ blog_post.title }}</h2>
+
+        <!-- Содержание блога -->
+        <div class="blog-content">
+            {{ blog_post.content }}
+        </div>
+
+        <!-- Дата создания -->
+        <p class="blog-date">Дата создания: {{ blog_post.created_at }}</p>
+
+        <!-- Признак публикации -->
+        <p class="blog-published">Признак публикации: {{ blog_post.is_published }}</p>
+
+        <!-- Количество просмотров -->
+        <p class="blog-views">Количество просмотров: {{ blog_post.views_count }}</p>
+
+        <!-- Изображение блога, если оно есть -->
+        {% if blog_post.preview %}
+            <a href="{{ blog_post.preview.url }}" target="_blank">
+                <img class="blog-preview" src="{{ blog_post.preview.url }}" alt="{{ blog_post.title }}" width="400" height="400">
+            </a>
+        {% endif %}
+
+        <!-- Кнопка для удаления блога -->
+    </div>
+{% endblock %}

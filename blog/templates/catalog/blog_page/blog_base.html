@@ -1,0 +1,26 @@
+{% extends 'forwarding/home_page.html' %}
+{% block body %}
+
+{% load my_tags %}
+{% load static %}
+
+
+
+<head>
+    {% block ccs_add %}
+    <link rel="stylesheet" href="{% static 'catalog/css/style.css' %}">
+{% endblock %}
+
+</head>
+
+<!-- Стили для скрытия изображений и подчеркивания текста -->
+
+<!-- Заголовок страницы -->
+{% include 'catalog/blog_page/blog_list.html' %}
+
+<!-- Навигация по страницам -->
+
+
+<!-- Скрипт для показа и скрытия изображений по нажатию на кнопку -->
+
+{% endblock %}
