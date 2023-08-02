@@ -1,0 +1,13 @@
+{% extends 'forwarding/home_page.html' %}
+{% block body %}
+
+    <h2>Удаление рассылки</h2>
+
+    <p>Вы уверены, что хотите удалить запись "{{ Transmission.title }}"?</p>
+
+    <form id="delete-form" action="{% url 'forwarding:transmission_delete' Transmission.slug %}" method="post">
+        {% csrf_token %}
+        <button id="delete-button" type="submit">Удалить</button>
+        <a href="{% url 'forwarding:transmissions' %}">Отмена</a>
+    </form>
+{% endblock %}

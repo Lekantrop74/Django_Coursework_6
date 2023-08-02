@@ -1,7 +1,9 @@
-{% extends 'mailing/base.html' %}
+{% extends 'forwarding/home_page.html' %}
 {% block body %}
 {{ test }}
 <form method="POST" enctype="multipart/form-data">
+    <a href="{% url 'forwarding:messages' %}" class="btn waves-effect waves-light">Назад</a>
+
     {% csrf_token %}
     {{ form.as_p }}
 

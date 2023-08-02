@@ -2,6 +2,7 @@ from django import forms
 from forwarding.models import Transmission, Statistic, Clients, Messages
 
 
+
 class StyleFormMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -30,13 +31,6 @@ class ClientCreateForm(StyleFormMixin, forms.ModelForm):
         fields = ["full_name", "email", "comment"]
 
 
-class MessageCreateForm(StyleFormMixin, forms.ModelForm):
-    """Form  for create message for client"""
-
-    class Meta:
-        model = Messages
-        fields = ["theme", "body"]
-
 
 class StatisticForm(forms.ModelForm):
     """Show statistic of transmission"""
@@ -64,4 +58,52 @@ class ClientsCreateForm(forms.ModelForm):
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.TextInput(attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+
+class MessagesForm(forms.ModelForm):
+    class Meta:
+        model = Messages
+        fields = ['theme', 'body', 'owner']
+        widgets = {
+            'theme': forms.TextInput(attrs={'class': 'form-control'}),
+            'body': forms.Textarea(attrs={'class': 'form-control'}),
+            'owner': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+
+class MessagesFormUpdate(forms.ModelForm):
+    class Meta:
+        model = Messages
+        fields = ['theme', 'body']
+        widgets = {
+            'theme': forms.TextInput(attrs={'class': 'form-control'}),
+            'body': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+
+class MessagesCreateForm(forms.ModelForm):
+    class Meta:
+        model = Messages
+        fields = ['theme', 'body']
+        widgets = {
+            'theme': forms.TextInput(attrs={'class': 'form-control'}),
+            'body': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+
+class TransmissionForm(forms.ModelForm):
+    class Meta:
+        model = Transmission
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'time': forms.TimeInput(attrs={'class': 'form-control'}),
+            'frequency': forms.Select(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+            'message': forms.Select(attrs={'class': 'form-control'}),
+            'clients': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'slug': forms.TextInput(attrs={'class': 'form-control'}),
+            'owner': forms.Select(attrs={'class': 'form-control'}),
+            'is_published': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }

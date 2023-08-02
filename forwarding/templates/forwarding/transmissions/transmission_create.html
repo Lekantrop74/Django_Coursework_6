@@ -1,0 +1,13 @@
+{% extends 'forwarding/home_page.html' %}
+{% block body %}
+
+<form method="POST" enctype="multipart/form-data">
+    <a href="{% url 'forwarding:transmissions' %}" class="btn waves-effect waves-light">Назад</a>
+
+    {% csrf_token %}
+    <div>
+    {{ form.as_p }}
+    </div>
+    <input type="submit" value="Create New Transmission">
+</form>
+{% endblock %}

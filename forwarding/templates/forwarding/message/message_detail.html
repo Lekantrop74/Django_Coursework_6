@@ -1,6 +1,7 @@
-{% extends 'mailing/base.html' %}
+{% extends 'forwarding/home_page.html' %}
 
 {% block body %}
+    <a href="{% url 'forwarding:messages' %}" class="btn waves-effect waves-light">Назад</a>
 
 <li>Theme: {{ Message.theme }}</li>
 <li>Body: {{ Message.body }}</li>

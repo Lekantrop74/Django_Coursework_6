@@ -1,0 +1,13 @@
+{% extends 'forwarding/home_page.html' %}
+{% block body %}
+
+    <h2>Удаление записи блога</h2>
+
+    <p>Вы уверены, что хотите удалить запись "{{ message.theme }}"?</p>
+
+    <form id="delete-form" action="{% url 'forwarding:message_delete' message.slug %}" method="post">
+        {% csrf_token %}
+        <button id="delete-button" type="submit">Удалить</button>
+        <a href="{% url 'forwarding:messages' %}">Отмена</a>
+    </form>
+{% endblock %}
