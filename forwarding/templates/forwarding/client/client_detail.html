@@ -1,0 +1,31 @@
+{% extends 'forwarding/home_page.html' %}
+{% block body %}
+
+{% load my_tags %}
+
+<div class="container">
+    <a href="{% url 'forwarding:clients' %}" class="btn waves-effect waves-light">Назад</a>
+
+    <!-- Заголовок страницы -->
+    <h2 class="client-title">{{ client.full_name }}</h2>
+
+    <!-- Содержание клиента -->
+    <div class="client-content">
+        <p><strong>Комментарии:</strong> {{ client.comment }}</p>
+        <p><strong>Почта:</strong> {{ client.email }}</p>
+        <p><strong>Владелец:</strong> {{ client.owner }}</p>
+    </div>
+
+    <!-- Изображение клиента, если оно есть -->
+    {% if client.preview %}
+    <div class="client-preview">
+        <a href="{{ client.preview.url }}" target="_blank">
+            <img src="{{ client.preview.url }}" alt="{{ client.full_name }}" width="400" height="400">
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Кнопка для удаления клиента -->
+    <!-- Здесь добавьте кнопку или ссылку для удаления клиента -->
+</div>
+{% endblock %}

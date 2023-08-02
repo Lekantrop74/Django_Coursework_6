@@ -1,0 +1,13 @@
+{% extends 'forwarding/home_page.html' %}
+{% block body %}
+
+    <h2>Удаление записи блога</h2>
+
+    <p>Вы уверены, что хотите удалить запись "{{ client.full_name }}"?</p>
+
+    <form id="delete-form" action="{% url 'forwarding:client_delete' client.slug %}" method="post">
+        {% csrf_token %}
+        <button id="delete-button" type="submit">Удалить</button>
+        <a href="{% url 'forwarding:clients' %}">Отмена</a>
+    </form>
+{% endblock %}

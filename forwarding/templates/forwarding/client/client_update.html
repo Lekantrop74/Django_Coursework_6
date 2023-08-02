@@ -1,0 +1,17 @@
+{% extends 'forwarding/home_page.html' %}
+{% block body %}
+
+{% load my_tags %}
+
+<h2>Редактирование Клиента</h2>
+
+<a href="{% url 'forwarding:clients' %}" class="btn waves-effect waves-light">Назад</a>
+
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+
+{% endblock %}

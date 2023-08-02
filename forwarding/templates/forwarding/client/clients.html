@@ -1,0 +1,71 @@
+{% extends 'forwarding/home_page.html' %}
+
+{% load my_tags %}
+
+{% block body %}
+    <!-- Заголовок страницы -->
+    <h2>Клиенты</h2>
+    <a class="btn waves-effect waves-light" href="{% url 'forwarding:client_create' %}">Добавить клиента</a>
+
+    <!-- Таблица с данными о клиентах -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Имя клиента</th>
+            <th>Комментарии</th>
+            <th>Почта</th>
+            <th>Владелец</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for client in Clients %}
+            <tr>
+                <td>{{ client.full_name }}</td>
+                <td>{{ client.comment }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.owner }}</td>
+                <td>
+                    <a href="{% url 'forwarding:client_card' client.slug %}" title="Подробнее">&#128269;</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'forwarding:client_update' client.slug %}" title="Редактировать">&#9998;</a>
+                        <a href="{% url 'forwarding:client_delete' client.slug %}" title="Удалить">&#128465;</a>
+                    {% endif %}
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Навигация по страницам (assuming you have pagination for Clients) -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if Clients.has_previous %}
+                <a class="btn-link" href="?page=1">&laquo; первая</a>
+                <a class="btn-link" href="?page={{ Clients.previous_page_number }}">&lsaquo; предыдущая</a>
+            {% endif %}
+
+            <span class="current-page">
+                Страница {{ Clients.number }} из {{ Clients.paginator.num_pages }}
+            </span>
+
+            {% if Clients.has_next %}
+                <a class="btn-link" href="?page={{ Clients.next_page_number }}">следующая &rsaquo;</a>
+                <a class="btn-link" href="?page={{ Clients.paginator.num_pages }}">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <!-- Скрипт для показа и скрытия изображений по нажатию на кнопку -->
+    <!-- Инициализация jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Скрипт для показа и скрытия изображений по нажатию на кнопку -->
+    <script>
+        $(document).ready(function () {
+            $('.spoiler').click(function () {
+                $(this).next('img').toggleClass('hidden');
+            });
+        });
+    </script>
+{% endblock %}
