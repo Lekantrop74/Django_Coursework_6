@@ -60,13 +60,9 @@ class ClientsCreateView(LoginRequiredMixin, CreateView):
         title = instance.full_name
         slug = slugify(unidecode(title))
         if Clients.objects.filter(slug=slug).exists():
-            form.errors['full_name'] = form.error_class(['Клиент с таким названием уже существует.'])
             return self.form_invalid(form)
         instance.slug = slug
-
-        views_count = self.request.POST.get('views_count', '')
-        instance.views_count = int(views_count) if views_count else 0
-
+        instance.owner = self.request.user
         instance.save()
         return super().form_valid(form)
 
@@ -87,10 +83,17 @@ class ClientsUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         """
-        Проверяет валидность формы и сохраняет измененные данные блога.
-        Устанавливает автора блога на текущего пользователя.
+        Проверяет валидность формы и сохраняет данные передачи.
+        Генерирует уникальный slug на основе заголовка передачи и устанавливает владельца на текущего пользователя.
         """
-        form.instance.author = self.request.user
+        instance = form.save(commit=False)
+        title = instance.full_name
+        slug = slugify(unidecode(title))
+        if Clients.objects.filter(slug=slug).exists():
+            return self.form_invalid(form)
+        instance.slug = slug
+        instance.owner = self.request.user
+        instance.save()
         return super().form_valid(form)
 
 
@@ -156,14 +159,13 @@ class MessagesCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         """
-        Checks form validity and saves the message data.
-        Generates a unique slug based on the message theme and sets the owner to the current user.
+        Проверяет валидность формы и сохраняет данные передачи.
+        Генерирует уникальный slug на основе заголовка передачи и устанавливает владельца на текущего пользователя.
         """
         instance = form.save(commit=False)
-        theme = instance.theme
-        slug = slugify(unidecode(theme))
+        title = instance.theme
+        slug = slugify(unidecode(title))
         if Messages.objects.filter(slug=slug).exists():
-            form.errors['theme'] = form.error_class(['A message with this theme already exists.'])
             return self.form_invalid(form)
         instance.slug = slug
         instance.owner = self.request.user
@@ -187,10 +189,17 @@ class MessagesUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         """
-        Checks form validity and saves the modified message data.
-        Sets the owner to the current user.
+        Проверяет валидность формы и сохраняет данные передачи.
+        Генерирует уникальный slug на основе заголовка передачи и устанавливает владельца на текущего пользователя.
         """
-        form.instance.owner = self.request.user
+        instance = form.save(commit=False)
+        title = instance.theme
+        slug = slugify(unidecode(title))
+        if Messages.objects.filter(slug=slug).exists():
+            return self.form_invalid(form)
+        instance.slug = slug
+        instance.owner = self.request.user
+        instance.save()
         return super().form_valid(form)
 
 
@@ -252,7 +261,6 @@ class TransmissionCreateView(LoginRequiredMixin, CreateView):
         title = instance.title
         slug = slugify(unidecode(title))
         if Transmission.objects.filter(slug=slug).exists():
-            form.errors['title'] = form.error_class(['Передача с таким заголовком уже существует.'])
             return self.form_invalid(form)
         instance.slug = slug
         instance.owner = self.request.user
@@ -276,10 +284,17 @@ class TransmissionUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         """
-        Проверяет валидность формы и сохраняет измененные данные передачи.
-        Устанавливает владельца на текущего пользователя.
+        Проверяет валидность формы и сохраняет данные передачи.
+        Генерирует уникальный slug на основе заголовка передачи и устанавливает владельца на текущего пользователя.
         """
-        form.instance.owner = self.request.user
+        instance = form.save(commit=False)
+        title = instance.title
+        slug = slugify(unidecode(title))
+        if Transmission.objects.filter(slug=slug).exists():
+            return self.form_invalid(form)
+        instance.slug = slug
+        instance.owner = self.request.user
+        instance.save()
         return super().form_valid(form)
 
 

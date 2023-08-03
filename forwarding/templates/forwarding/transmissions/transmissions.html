@@ -6,7 +6,7 @@
     <!-- Заголовок страницы -->
     <h2>Рассылки</h2>
 
-    {% if perms.forwarding.add_Transmission %}
+    {% if perms.forwarding.add_transmission %}
         <a class="btn waves-effect waves-light" href="{% url 'forwarding:transmission_create' %}">Добавить Рассылку</a>
     {% endif %}
 
@@ -44,11 +44,21 @@
                     <a href="{% url 'forwarding:transmission_detail' transmission.slug %}"
                        title="Подробнее">&#128269;</a>
                     {% if user.is_authenticated %}
-                        <a href="{% url 'forwarding:transmission_update' transmission.slug %}" title="Редактировать">&#9998;</a>
-                        <a href="{% url 'forwarding:transmission_delete' transmission.slug %}"
-                           title="Удалить">&#128465;</a>
-                        <a href="{% url 'forwarding:transmission_send' transmission.slug %}"
-                           title="Рассылка">✉️</a>
+
+                        {% if perms.forwarding.change_transmission %}
+                            <a href="{% url 'forwarding:transmission_update' transmission.slug %}"
+                               title="Редактировать">&#9998;</a>
+                        {% endif %}
+
+                        {% if perms.forwarding.delete_transmission %}
+                            <a href="{% url 'forwarding:transmission_delete' transmission.slug %}"
+                               title="Удалить">&#128465;</a>
+                        {% endif %}
+
+                        {% if perms.forwarding.add_transmission %}
+                            <a href="{% url 'forwarding:transmission_send' transmission.slug %}"
+                               title="Рассылка">✉️</a>
+                        {% endif %}
 
                     {% endif %}
                 </td>

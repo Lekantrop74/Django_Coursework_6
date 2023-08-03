@@ -3,10 +3,10 @@
 {% block content %}
     <!-- Заголовок страницы -->
     <h2>Блог</h2>
-    {% if perms.blog.add_blog %}
 
-    <a class="btn waves-effect waves-light" href="{% url 'blog:blog_post_create' %}">Добавить блог</a>
-            {% endif %}
+    {% if perms.blog.add_blog %}
+        <a class="btn waves-effect waves-light" href="{% url 'blog:blog_post_create' %}">Добавить блог</a>
+    {% endif %}
 
     <form action="" method="GET">
         {% csrf_token %}
@@ -45,8 +45,15 @@
                 <td>
                     <a href="{% url 'blog:blog_post_detail' post.slug %}" title="Подробнее">&#128269;</a>
                     {% if user.is_authenticated %}
-                        <a href="{% url 'blog:blog_post_update' post.slug %}" title="Редактировать">&#9998;</a>
-                        <a href="{% url 'blog:blog_post_delete' post.slug %}" title="Удалить">&#128465;</a>
+
+                        {% if perms.blog.change_blog %}
+                            <a href="{% url 'blog:blog_post_update' post.slug %}" title="Редактировать">&#9998;</a>
+                        {% endif %}
+
+                        {% if perms.blog.delete_blog %}
+                            <a href="{% url 'blog:blog_post_delete' post.slug %}" title="Удалить">&#128465;</a>
+                        {% endif %}
+
                     {% endif %}
                 </td>
             </tr>
