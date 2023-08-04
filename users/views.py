@@ -1,11 +1,9 @@
 import random
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.core.cache import cache
 from django.core.mail import send_mail
-from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView
@@ -20,6 +18,10 @@ class RegisterView(CreateView):
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
 
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        self.object = None
+
     def form_valid(self, form):
         self.object = form.save()
         self.object.is_active = False
@@ -28,7 +30,8 @@ class RegisterView(CreateView):
 
         send_mail(
             'Верификация',
-            f'Для регистрации перейдите по ссылке http://localhost:8000/users/confirm_email/{self.object.verification_key}',
+            f'Для регистрации перейдите по ссылке http://localhost:8000/users/confirm_email/'
+            f'{self.object.verification_key}',
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[self.object.email]
 
@@ -45,27 +48,28 @@ def confirm_email(request, verification_key):
             user.is_active = True
             user.save()
             cache.delete(verification_key)  # Удаляем ключ из кэша после подтверждения
-            return render(request, 'users/confirmation_success.html')  # Перенаправляем на страницу успешного подтверждения
+            return render(request,
+                          'users/confirmation_success.html')  # Перенаправляем на страницу успешного подтверждения
         except User.DoesNotExist:
-            # Обработка случая, если пользователя не существует
-            # Вывод сообщения об ошибке или перенаправление на другую страницу
             pass
-    # Обработка случая, если ключ недействителен или истек срок действия
-    # Вывод сообщения об ошибке или перенаправление на другую страницу
     return render(request, 'users/confirmation_error.html')  # Перенаправляем на страницу ошибки подтверждения
 
 
 class LoginView(BaseLoginView):
     model = User
-    template_name = 'users/login1.html'
+    template_name = 'users/login.html'
     success_url = reverse_lazy('users:profile')
+
     def form_valid(self, form):
         user = form.get_user()
         if not user.is_active:
-            messages.error(self.request, "Аккаунт не активирован. Пожалуйста, проверьте вашу почту и подтвердите адрес электронной почты.")
+            messages.error(self.request,
+                           "Аккаунт не активирован. Пожалуйста, проверьте вашу почту и подтвердите адрес электронной "
+                           "почты.")
             return redirect('register')  # Перенаправление на страницу входа с сообщением об ошибке.
 
         return super().form_valid(form)
+
 
 class UserUpdateView(UpdateView):
     model = User

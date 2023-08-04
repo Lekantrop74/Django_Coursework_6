@@ -9,7 +9,6 @@ from django.views import View
 from django.views.generic import ListView, UpdateView, DeleteView, DetailView, CreateView
 from unidecode import unidecode
 import config.settings
-
 from blog.models import BlogPost
 from config import settings
 from forwarding.forms import ClientsForm, ClientsCreateForm, MessagesCreateForm, TransmissionForm, \
@@ -27,6 +26,7 @@ class ClientsView(LoginRequiredMixin, ListView):
     """Show all clients for owner / moderator / admin"""
     model = Clients
     template_name = "forwarding/client/clients.html"
+    paginate_by = 5
 
     def get_queryset(self):
         queryset = super().get_queryset().all()
@@ -92,7 +92,6 @@ class ClientsUpdateView(LoginRequiredMixin, UpdateView):
         if Clients.objects.filter(slug=slug).exists():
             return self.form_invalid(form)
         instance.slug = slug
-        instance.owner = self.request.user
         instance.save()
         return super().form_valid(form)
 
@@ -198,7 +197,6 @@ class MessagesUpdateView(LoginRequiredMixin, UpdateView):
         if Messages.objects.filter(slug=slug).exists():
             return self.form_invalid(form)
         instance.slug = slug
-        instance.owner = self.request.user
         instance.save()
         return super().form_valid(form)
 
@@ -222,6 +220,7 @@ class TransmissionListView(LoginRequiredMixin, ListView):
     model = Transmission  # Используем модель Transmission
     template_name = "forwarding/transmissions/transmissions.html"  # Обновленный путь к шаблону
     context_object_name = 'Transmission'
+    ordering = 'time'
     paginate_by = 5
 
     def get_queryset(self):
@@ -285,7 +284,7 @@ class TransmissionUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         """
         Проверяет валидность формы и сохраняет данные передачи.
-        Генерирует уникальный slug на основе заголовка передачи и устанавливает владельца на текущего пользователя.
+        Генерирует уникальный slug на основе заголовка передачи.
         """
         instance = form.save(commit=False)
         title = instance.title
@@ -293,7 +292,6 @@ class TransmissionUpdateView(LoginRequiredMixin, UpdateView):
         if Transmission.objects.filter(slug=slug).exists():
             return self.form_invalid(form)
         instance.slug = slug
-        instance.owner = self.request.user
         instance.save()
         return super().form_valid(form)
 
@@ -312,29 +310,42 @@ class TransmissionDeleteView(LoginRequiredMixin, DeleteView):
 
 
 class SendTransmissionView(View):
+    # Указываем шаблон, который будет использован для отображения страницы
     template_name = 'forwarding/transmissions/transmission_send.html'
 
+    # Обработчик GET-запроса
     def get(self, request, *args, **kwargs):
         try:
+            # Получаем значение slug из параметров запроса
             slug = self.kwargs.get('slug')
+            # Ищем объект передачи (Transmission) по переданному slug
             transmission = Transmission.objects.get(slug=slug)
         except Transmission.DoesNotExist:
+            # Если передача не найдена, возвращаем HTTP-ответ со статусом 404 (страница не найдена)
             return HttpResponse("Передача не найдена.", status=404)
 
+        # Формируем контекст данных для отображения на странице
         context = {
             'transmission': transmission,
         }
+        # Отображаем страницу с переданным контекстом
         return render(request, self.template_name, context)
 
+    # Обработчик POST-запроса
     def post(self, request, *args, **kwargs):
         try:
+            # Получаем значение slug из параметров запроса
             slug = self.kwargs.get('slug')
+            # Ищем объект передачи (Transmission) по переданному slug
             transmission = Transmission.objects.get(slug=slug)
         except Transmission.DoesNotExist:
+            # Если передача не найдена, возвращаем HTTP-ответ со статусом 404 (страница не найдена)
             return HttpResponse("Передача не найдена.", status=404)
 
-        message = transmission.message  # Получаем связанный объект Messages для передачи
+        # Получаем связанный объект сообщения (Messages) для передачи
+        message = transmission.message
         if message:
+            # Если есть сообщение, отправляем письмо каждому клиенту из списка
             for client in transmission.clients.all():
                 send_mail(
                     message.theme,  # Используем тему из модели Messages в качестве темы электронной почты
@@ -347,7 +358,7 @@ class SendTransmissionView(View):
         transmission.status = Transmission.TransmissionStatus.Finished
         transmission.save()
 
-        # Перенаправляем обратно на список передач или другую желаемую страницу
+        # Перенаправляем пользователя обратно на список передач или другую желаемую страницу
         return redirect('forwarding:transmissions')
 
 

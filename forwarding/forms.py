@@ -1,6 +1,4 @@
 from django import forms
-from django.forms.utils import ErrorList
-
 from forwarding.models import Transmission, Statistic, Clients, Messages
 
 
@@ -22,14 +20,6 @@ class TransmissionCreateForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Transmission
         fields = ["title", "time", "frequency", "message", "clients"]
-
-
-class ClientCreateForm(StyleFormMixin, forms.ModelForm):
-    """Form for create client"""
-
-    class Meta:
-        model = Clients
-        fields = ["full_name", "email", "comment"]
 
 
 class StatisticForm(forms.ModelForm):

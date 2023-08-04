@@ -50,18 +50,18 @@
     <!-- Навигация по страницам (assuming you have pagination for Clients) -->
     <div class="pagination">
         <span class="step-links">
-            {% if Clients.has_previous %}
+            {% if page_obj.has_previous %}
                 <a class="btn-link" href="?page=1">&laquo; первая</a>
-                <a class="btn-link" href="?page={{ Clients.previous_page_number }}">&lsaquo; предыдущая</a>
+                <a class="btn-link" href="?page={{ page_obj.previous_page_number }}">&lsaquo; предыдущая</a>
             {% endif %}
 
             <span class="current-page">
-                Страница {{ Clients.number }} из {{ Clients.paginator.num_pages }}
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
             </span>
 
-            {% if Clients.has_next %}
-                <a class="btn-link" href="?page={{ Clients.next_page_number }}">следующая &rsaquo;</a>
-                <a class="btn-link" href="?page={{ Clients.paginator.num_pages }}">последняя &raquo;</a>
+            {% if page_obj.has_next %}
+                <a class="btn-link" href="?page={{ page_obj.next_page_number }}">следующая &rsaquo;</a>
+                <a class="btn-link" href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
             {% endif %}
         </span>
     </div>

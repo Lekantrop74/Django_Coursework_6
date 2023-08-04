@@ -5,6 +5,8 @@ from django.conf import settings
 
 class Clients(models.Model):
     """Модель клиента для отправки"""
+    objects = None
+
     full_name = models.CharField(max_length=100, verbose_name="Имя клиента", null=False, blank=False, unique=True)
     comment = models.TextField(max_length=500, null=True, blank=True, verbose_name="Комментарии")
     email = models.EmailField(max_length=255, verbose_name="Почта", null=False, blank=False, unique=False)
@@ -23,6 +25,8 @@ class Clients(models.Model):
 
 class Transmission(models.Model):
     """Модель передачи для рассылки"""
+
+    objects = None
 
     class TransmissionStatus(models.TextChoices):
         Finished = 'FINISHED'
@@ -48,11 +52,11 @@ class Transmission(models.Model):
     is_published = models.BooleanField(default=True, verbose_name="Опубликовано")
 
     class Meta:
-        verbose_name = "Передача"
-        verbose_name_plural = "Шаблоны передач"
+        verbose_name = "Рассылка"
+        verbose_name_plural = "Шаблоны рассылок"
 
     def __str__(self):
-        return f"Передача: {self.title}"
+        return f"Рассылка: {self.title}"
 
     def get_messages(self):
         """Получить сообщение для передачи, когда используется планировщик"""
@@ -65,6 +69,8 @@ class Transmission(models.Model):
 
 class Messages(models.Model):
     """Модель сообщения для клиентов для отправки"""
+    objects = None
+
     theme = models.CharField(max_length=50, verbose_name="Тема сообщения", null=False, blank=False, unique=True)
     body = models.TextField(max_length=500, verbose_name="Тело сообщения", null=False, blank=False)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True,
