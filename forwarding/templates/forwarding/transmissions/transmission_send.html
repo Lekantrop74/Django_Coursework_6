@@ -1,13 +1,16 @@
 {% extends 'forwarding/home_page.html' %}
 {% block body %}
 
-    <h2>Отправление рассылки</h2>
+<h2>Отправление рассылки</h2>
 
-    <p>Вы уверены, что хотите отправить "{{ transmission.clients }}"?</p>
-
-    <form id="delete-form" action="{% url 'forwarding:transmission_send' transmission.slug %}" method="post">
-        {% csrf_token %}
-        <button id="delete-button" type="submit">Да</button>
-        <a href="{% url 'forwarding:transmissions' %}">Нет</a>
-    </form>
+<p>Вы уверены, что хотите отправить рассылку: "?</p>
+{% for client in transmission.clients.all %}
+    <li>{{ client.email }}</li>
+{% endfor %}
+<br>
+<form action="{% url 'forwarding:transmission_send' transmission.slug %}" id="delete-form" method="post">
+    {% csrf_token %}
+    <button id="delete-button" type="submit">Да</button>
+    <a href="{% url 'forwarding:transmissions' %}">Нет</a>
+</form>
 {% endblock %}

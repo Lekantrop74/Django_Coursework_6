@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils.text import slugify
+from unidecode import unidecode
 
 from config import settings
 
@@ -22,3 +24,8 @@ class BlogPost(models.Model):
         verbose_name = "Запись блога"
         verbose_name_plural = "Записи блога"
         ordering = ('-created_at',)
+
+    def save(self, *args, **kwargs):
+        # Генерировать slug на основе email перед сохранением объекта
+        self.slug = slugify(unidecode(self.title))
+        super().save(*args, **kwargs)

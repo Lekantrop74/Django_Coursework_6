@@ -4,7 +4,7 @@
     <!-- Заголовок страницы -->
     <h2>Блог</h2>
 
-    {% if perms.blog.add_blog %}
+    {% if perms.blog.add_blogpost %}
         <a class="btn waves-effect waves-light" href="{% url 'blog:blog_post_create' %}">Добавить блог</a>
     {% endif %}
 
@@ -46,11 +46,11 @@
                     <a href="{% url 'blog:blog_post_detail' post.slug %}" title="Подробнее">&#128269;</a>
                     {% if user.is_authenticated %}
 
-                        {% if perms.blog.change_blog %}
+                        {% if perms.blog.change_blogpost %}
                             <a href="{% url 'blog:blog_post_update' post.slug %}" title="Редактировать">&#9998;</a>
                         {% endif %}
 
-                        {% if perms.blog.delete_blog %}
+                        {% if perms.blog.delete_blogpost %}
                             <a href="{% url 'blog:blog_post_delete' post.slug %}" title="Удалить">&#128465;</a>
                         {% endif %}
 

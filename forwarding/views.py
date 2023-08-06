@@ -25,6 +25,8 @@ def home_page(request):
 class ClientsView(LoginRequiredMixin, ListView):
     """Show all clients for owner / moderator / admin"""
     model = Clients
+    context_object_name = 'Clients'
+
     template_name = "forwarding/client/clients.html"
     paginate_by = 5
 
@@ -36,8 +38,6 @@ class ClientsView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["Title"] = "Clients"
-        context["Clients"] = self.get_queryset()
         return context
 
 
@@ -87,11 +87,9 @@ class ClientsUpdateView(LoginRequiredMixin, UpdateView):
         Генерирует уникальный slug на основе заголовка передачи и устанавливает владельца на текущего пользователя.
         """
         instance = form.save(commit=False)
-        title = instance.full_name
-        slug = slugify(unidecode(title))
+        slug = slugify(unidecode(instance.full_name))
         if Clients.objects.filter(slug=slug).exists():
             return self.form_invalid(form)
-        instance.slug = slug
         instance.save()
         return super().form_valid(form)
 

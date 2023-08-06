@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.utils.text import slugify
+from unidecode import unidecode
 
 
 class Clients(models.Model):
@@ -21,6 +23,11 @@ class Clients(models.Model):
     def __str__(self):
         """Вернуть почту клиента для быстрой рассылки"""
         return self.email
+
+    def save(self, *args, **kwargs):
+        # Генерировать slug на основе email перед сохранением объекта
+        self.slug = slugify(unidecode(self.full_name))
+        super().save(*args, **kwargs)
 
 
 class Transmission(models.Model):
@@ -67,6 +74,8 @@ class Transmission(models.Model):
         return self.clients.all()
 
 
+
+
 class Messages(models.Model):
     """Модель сообщения для клиентов для отправки"""
     objects = None
@@ -87,6 +96,11 @@ class Messages(models.Model):
     def get_info(self):
         """Вернуть информацию о сообщении для быстрой отправки"""
         return self.theme, self.body
+
+    def save(self, *args, **kwargs):
+        # Генерировать slug на основе email перед сохранением объекта
+        self.slug = slugify(unidecode(self.theme))
+        super().save(*args, **kwargs)
 
 
 class Statistic(models.Model):
